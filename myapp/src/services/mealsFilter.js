@@ -4,6 +4,7 @@ const filterMealsByIngredients = async (ingredientName) => {
   try {
     const url = `${config.mealDbEndpoint}/filter.php?i=${encodeURIComponent(ingredientName)}`;
     const res = await fetch(url);
+    console.log(`${config.mealDbEndpoint}/filter.php?i=${encodeURIComponent(ingredientName)}`);
     console.log(url);
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
