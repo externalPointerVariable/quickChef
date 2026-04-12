@@ -8,22 +8,23 @@ function QuickChefLogo() {
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="text-indigo-500"
+      className="text-black"
     >
       <circle
-        cx="50"
-        cy="50"
+        cx="54"
+        cy="53"
         r="48"
         fill="#EEF2FF"
         className="transition-all duration-300"
       />
       <path
-        d="M30 50 C 40 30, 70 30, 80 50 C 75 65, 55 60, 40 70 L 30 50 Z"
+        d="m 30 50 C 35 30 70 30 77 50 L 69 70 C 57 64 53 64 40 70 L 30 50 Z"
         fill="currentColor"
       />
       <path
-        d="M55 50 L 70 65 L 85 50"
-        stroke="#FFFFFF"
+        d="m 40 77 L 55 83 L 70 77"
+        //40 55 70     45 75     35 80 
+        stroke="#000000"
         strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -34,11 +35,11 @@ function QuickChefLogo() {
 
 function Header() {
   return (
-    <header className="bg-white shadow-md border-r-3">
+    <header className="bg-gray-200 shadow-md border-r-3">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <QuickChefLogo />
-          <h1 className="text-3xl font-extrabold text-indigo-600">Quick Chef</h1>
+          <h1 className="text-3xl font-extrabold text-black">Quick Chef</h1>
         </div>
       </div>
     </header>
