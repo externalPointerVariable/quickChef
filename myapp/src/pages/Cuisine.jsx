@@ -17,6 +17,12 @@ function Cuisine() {
       const data = await getCuisineList();
       if (data?.meals) {
         setCuisines(data.meals.map((c) => c.strArea));
+       // Pick a random index from the original array
+       const randomIndex = Math.floor(Math.random() * data.meals.length);
+      // Access the .strArea property of that random object
+       const randomCuisineName = data.meals[randomIndex].strArea;
+      // Set the selected state to trigger the recipe fetch
+       setSelectedCuisine(randomCuisineName);
       }
     };
     loadCuisines();

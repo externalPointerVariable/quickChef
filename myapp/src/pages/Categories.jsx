@@ -17,6 +17,10 @@ function Categories() {
       const data = await getCategoryList();
       if (data?.categories) {
         setCategories(data.categories.map((c) => c.strCategory));
+       const randomIndex = Math.floor(Math.random() * data.categories.length);
+       const randomCategoryName = data.categories[randomIndex].strCategory;
+      
+       setSelectedCategory(randomCategoryName);
       }
     };
     loadCategories();
