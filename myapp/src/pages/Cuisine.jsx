@@ -12,6 +12,9 @@ function Cuisine() {
   const [error, setError] = useState(null);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
 
+  // 🔍 NEW: search state
+  const [searchTerm, setSearchTerm] = useState('');
+
   useEffect(() => {
     const loadCuisines = async () => {
       const data = await getCuisineList();
@@ -49,35 +52,72 @@ function Cuisine() {
     }
   }, [selectedCuisine, loadRecipes]);
 
+  // 🔍 NEW: filter logic
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <main className="max-w-6xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Browse by Cuisine</h1>
+    <main className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen 
+    bg-gradient-to-br from-indigo-100 via-indigo-50 to-purple-100">
 
-      <select
-        value={selectedCuisine}
-        onChange={(e) => setSelectedCuisine(e.target.value)}
-        className="mb-6 p-3 border border-gray-300 rounded-lg text-lg"
-      >
-        <option value="">Select a cuisine</option>
+      {/* Title */}
+      <h1 className="text-4xl font-bold text-gray-800 mb-6 tracking-tight">
+        Browse by Cuisine
+      </h1>
+
+      {/* 🔍 Search */}
+      <div className="relative mb-6">
+        <input
+          type="text"
+          placeholder="Search recipes (e.g. pasta, curry...)"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-3 pl-10 rounded-xl border border-indigo-100 
+          bg-indigo-50/60 focus:outline-none focus:ring-2 focus:ring-indigo-300
+          placeholder-gray-400 text-gray-700"
+        />
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          🔍
+        </span>
+      </div>
+
+      {/* 🔥 Cuisine Pills */}
+      <div className="flex flex-wrap gap-3 mb-8">
         {cuisines.map((cuisine) => (
-          <option key={cuisine} value={cuisine}>
+          <button
+            key={cuisine}
+            onClick={() => setSelectedCuisine(cuisine)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+            ${
+              selectedCuisine === cuisine
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-indigo-50/80 border border-indigo-100 text-gray-700 hover:bg-indigo-100'
+            }`}
+          >
             {cuisine}
-          </option>
+          </button>
         ))}
-      </select>
+      </div>
 
-      {isLoading && <LoadingSpinner text="Fetching recipes..." />}
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-md mb-6">
-          <strong className="font-bold">Error:</strong>
-          <span className="ml-2">{error}</span>
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex justify-center py-16">
+          <LoadingSpinner text="Finding delicious recipes..." />
         </div>
       )}
 
-      {!isLoading && !error && recipes.length > 0 && (
+      {/* Error */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6">
+          {error}
+        </div>
+      )}
+
+      {/* Recipes */}
+      {!isLoading && !error && filteredRecipes.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {recipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <RecipeCard
               key={recipe.idMeal}
               recipe={recipe}
@@ -87,13 +127,18 @@ function Cuisine() {
         </div>
       )}
 
-      {!isLoading && !error && selectedCuisine && recipes.length === 0 && (
-        <div className="py-16 text-center text-gray-500 bg-white rounded-xl shadow-lg">
-          <p className="text-xl font-semibold mb-2">No recipes found for this cuisine.</p>
-          <p>Try selecting a different option.</p>
+      {/* Empty */}
+      {!isLoading && !error && selectedCuisine && filteredRecipes.length === 0 && (
+        <div className="py-16 text-center text-gray-500 
+        bg-indigo-50/60 border border-indigo-100 rounded-2xl shadow-sm">
+          <p className="text-xl font-semibold mb-2">
+            Nothing here yet 👀
+          </p>
+          <p>Try another cuisine or search</p>
         </div>
       )}
 
+      {/* Modal */}
       {selectedRecipeId && (
         <RecipeDetail
           recipeId={selectedRecipeId}

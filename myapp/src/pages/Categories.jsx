@@ -30,7 +30,6 @@ function Categories() {
 
     try {
       const data = await filterMealByCategory(category);
-      console.log(data);
       const meals = data || [];
       setRecipes(meals);
 
@@ -53,33 +52,49 @@ function Categories() {
   }, [selectedCategory, loadRecipes]);
 
   return (
-    <main className="max-w-6xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Browse by Category</h1>
+    <main className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen 
+    bg-gradient-to-br from-indigo-100 via-indigo-50 to-purple-100">
 
-      <select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        className="mb-6 p-3 border border-gray-300 rounded-lg text-lg"
-      >
-        <option value="">Select a category</option>
+      {/* Title */}
+      <h1 className="text-4xl font-bold text-gray-800 mb-6 tracking-tight">
+        Browse Recipes
+      </h1>
+
+      {/* Category Pills */}
+      <div className="flex flex-wrap gap-3 mb-8">
         {categories.map((category) => (
-          <option key={category} value={category}>
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+            ${
+              selectedCategory === category
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-indigo-50/80 border border-indigo-100 text-gray-700 hover:bg-indigo-100'
+            }`}
+          >
             {category}
-          </option>
+          </button>
         ))}
-      </select>
+      </div>
 
-      {isLoading && <LoadingSpinner text="Fetching recipes..." />}
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-md mb-6">
-          <strong className="font-bold">Error:</strong>
-          <span className="ml-2">{error}</span>
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex justify-center py-16">
+          <LoadingSpinner text="Finding delicious recipes..." />
         </div>
       )}
 
+      {/* Error */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6">
+          {error}
+        </div>
+      )}
+
+      {/* Recipes Grid */}
       {!isLoading && !error && recipes.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-fadeIn">
           {recipes.map((recipe) => (
             <RecipeCard
               key={recipe.idMeal}
@@ -90,13 +105,18 @@ function Categories() {
         </div>
       )}
 
+      {/* Empty State */}
       {!isLoading && !error && selectedCategory && recipes.length === 0 && (
-        <div className="py-16 text-center text-gray-500 bg-white rounded-xl shadow-lg">
-          <p className="text-xl font-semibold mb-2">No recipes found for this category.</p>
-          <p>Try selecting a different option.</p>
+        <div className="py-16 text-center text-gray-500 
+        bg-indigo-50/60 border border-indigo-100 rounded-2xl shadow-sm">
+          <p className="text-xl font-semibold mb-2">
+            Nothing here yet 👀
+          </p>
+          <p>Try another category</p>
         </div>
       )}
 
+      {/* Modal */}
       {selectedRecipeId && (
         <RecipeDetail
           recipeId={selectedRecipeId}

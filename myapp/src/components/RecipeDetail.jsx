@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { filterMealById } from '../services/index.js';
-import LoadingSpinner from './LoadingSpinner.jsx'; // Ensure this import exists
+import LoadingSpinner from './LoadingSpinner.jsx';
 
 const ModalLayout = ({ children, onClose }) => (
   <div
-    className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-70 flex items-center justify-center p-4"
+    className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
     onClick={onClose}
   >
     <div
-      className="bg-white rounded-xl shadow-2xl max-w-4xl w-full p-6 md:p-8 transform transition-all duration-300"
+      className="bg-white/80 backdrop-blur-xl border border-white/30 
+      rounded-2xl shadow-2xl max-w-4xl w-full p-6 md:p-8 
+      transform transition-all duration-300 scale-95 animate-[fadeIn_0.3s_ease-out_forwards]"
       onClick={(e) => e.stopPropagation()}
     >
       {children}
@@ -64,7 +66,7 @@ function RecipeDetail({ recipeId, onClose }) {
   if (error) {
     return (
       <ModalLayout onClose={onClose}>
-        <div className="text-red-600 p-8 text-center">{error}</div>
+        <div className="text-red-500 p-8 text-center">{error}</div>
       </ModalLayout>
     );
   }
@@ -78,12 +80,20 @@ function RecipeDetail({ recipeId, onClose }) {
 
   return (
     <ModalLayout onClose={onClose}>
-      <div className="flex justify-between items-start border-b pb-3 mb-4">
-        <h2 className="text-3xl font-extrabold text-gray-800">{details.strMeal}</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition">
+      
+      {/* Header */}
+      <div className="flex justify-between items-start mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 leading-tight">
+          {details.strMeal}
+        </h2>
+
+        <button
+          onClick={onClose}
+          className="p-2 rounded-full hover:bg-gray-100 transition active:scale-90"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-6 w-6 text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -94,56 +104,72 @@ function RecipeDetail({ recipeId, onClose }) {
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
+      {/* Content */}
+      <div className="flex flex-col md:flex-row gap-8">
+
+        {/* Left */}
         <div className="md:w-1/3 flex-shrink-0">
           <img
             src={details.strMealThumb}
             alt={details.strMeal}
-            className="w-full h-auto rounded-lg shadow-xl mb-4 object-cover"
+            className="w-full h-auto rounded-xl shadow-lg object-cover transition duration-500 hover:scale-[1.02]"
             onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'https://placehold.co/400x300/D1D5DB/1F2937?text=No+Image';
+              e.target.src = 'https://placehold.co/400x300';
             }}
           />
-          <div className="flex flex-wrap gap-2 text-sm">
-            <span className="px-3 py-1 bg-indigo-100 text-indigo-800 font-medium rounded-full">
-              Category: {details.strCategory}
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 text-sm mt-4">
+            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 
+            rounded-full border border-indigo-200 backdrop-blur-sm">
+              {details.strCategory}
             </span>
-            <span className="px-3 py-1 bg-indigo-100 text-indigo-800 font-medium rounded-full">
-              Area: {details.strArea}
+
+            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 
+            rounded-full border border-indigo-200 backdrop-blur-sm">
+              {details.strArea}
             </span>
+
             {details.strYoutube && (
               <a
                 href={details.strYoutube}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1 bg-red-100 text-red-800 font-medium rounded-full hover:bg-red-200 transition"
+                className="px-3 py-1 bg-red-500/10 text-red-600 
+                rounded-full border border-red-200 hover:bg-red-500/20 transition"
               >
-                Watch Tutorial
+                Watch →
               </a>
             )}
           </div>
         </div>
 
-        <div className="md:w-2/3 overflow-y-auto max-h-[70vh] pb-8 pr-4">
-          <h3 className="text-2xl font-bold text-gray-700 mb-3 border-b pb-1">Ingredients</h3>
-          <ul className="list-disc ml-5 space-y-1 text-gray-600">
+        {/* Right */}
+        <div className="md:w-2/3 overflow-y-auto max-h-[70vh] pr-2">
+
+          {/* Ingredients */}
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+            Ingredients
+          </h3>
+
+          <ul className="ml-5 space-y-2 text-gray-700">
             {ingredientsList.map((ing, index) => (
-              <li key={index} className="text-base">
-                {ing}
-              </li>
+              <li key={index}>{ing}</li>
             ))}
           </ul>
 
-          <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-3 border-b pb-1">Instructions</h3>
-          <ol className="list-decimal ml-5 space-y-3 text-gray-700">
+          {/* Instructions */}
+          <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+            Instructions
+          </h3>
+
+          <ol className="ml-5 space-y-4 text-gray-700 leading-relaxed">
             {instructions.map((step, index) => (
-              <li key={index} className="text-base">
-                {step}
-              </li>
+              <li key={index}>{step}</li>
             ))}
           </ol>
         </div>
+
       </div>
     </ModalLayout>
   );
