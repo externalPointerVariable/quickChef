@@ -11,37 +11,42 @@ function RecipeCard({ recipe, onSelectRecipe }) {
   return (
     <div
       onClick={() => onSelectRecipe(recipe.idMeal)}
-      className="group relative cursor-pointer rounded-2xl overflow-hidden 
-      bg-white/30 backdrop-blur-lg border border-white/20 shadow-lg 
-      hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 active:scale-[0.98]"
+      className="group cursor-pointer rounded-2xl overflow-hidden 
+      bg-white shadow-md hover:shadow-2xl 
+      transition duration-300 hover:-translate-y-2 active:scale-[0.98]"
     >
-
+      
       {/* Image */}
-      <div className="aspect-video overflow-hidden">
+      <div className="relative overflow-hidden">
         <img
           src={recipe.strMealThumb}
           alt={recipe.strMeal}
-          className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+          className="w-full h-48 object-cover transition duration-500 group-hover:scale-110"
           onError={(e) => {
             e.target.src = 'https://placehold.co/600x400';
           }}
         />
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+        {/* Base gradient (always visible) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
 
-        {/* Hover CTA */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
-        <span className="text-white text-sm font-semibold tracking-wide flex items-center gap-1">
-         View Recipe 
-         <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-      </span>
+        {/* 🔥 Hover overlay */}
+        <div className="absolute inset-0 bg-black/50 opacity-0 
+        group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+
+          <span className="text-white text-sm font-semibold tracking-wide flex items-center gap-1">
+            View Recipe
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </span>
+
         </div>
       </div>
 
       {/* Title */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 group-hover:text-indigo-600 transition">
+        <h3 className="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition">
           {truncatedTitle}
         </h3>
       </div>

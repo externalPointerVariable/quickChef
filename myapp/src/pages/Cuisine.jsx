@@ -4,7 +4,7 @@ import RecipeDetail from '../components/RecipeDetail.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
 import { getCuisineList, filterMealByCuisine } from '../services/index.js';
 
-function Cuisine() {
+function Cuisine({ activeSearch }) {
   const [cuisines, setCuisines] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [recipes, setRecipes] = useState([]);
@@ -57,96 +57,110 @@ function Cuisine() {
     recipe.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  return (
-    <main className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen 
-    bg-gradient-to-br from-indigo-100 via-indigo-50 to-purple-100">
+  useEffect(() => {
+    if (activeSearch !== 'cuisine') {
+      setSearchTerm('');
+    }
+  }, [activeSearch]);
 
-      {/* Title */}
-      <h1 className="text-4xl font-bold text-gray-800 mb-6 tracking-tight">
-        Browse by Cuisine
-      </h1>
+ return (
+  <div id="cuisine" className="scroll-mt-24">
 
-      {/* 🔍 Search */}
-      <div className="relative mb-6">
-        <input
-          type="text"
-          placeholder="Search recipes (e.g. pasta, curry...)"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-3 pl-10 rounded-xl border border-indigo-100 
-          bg-indigo-50/60 focus:outline-none focus:ring-2 focus:ring-indigo-300
-          placeholder-gray-400 text-gray-700"
-        />
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          🔍
-        </span>
-      </div>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      
+      <div className="bg-white rounded-3xl shadow-lg p-6 mb-10">
 
-      {/* 🔥 Cuisine Pills */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {cuisines.map((cuisine) => (
-          <button
-            key={cuisine}
-            onClick={() => setSelectedCuisine(cuisine)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
-            ${
-              selectedCuisine === cuisine
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-indigo-50/80 border border-indigo-100 text-gray-700 hover:bg-indigo-100'
-            }`}
-          >
-            {cuisine}
-          </button>
-        ))}
-      </div>
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-gray-800 mb-6 tracking-tight">
+          Browse by Cuisine
+        </h1>
 
-      {/* Loading */}
-      {isLoading && (
-        <div className="flex justify-center py-16">
-          <LoadingSpinner text="Finding delicious recipes..." />
-        </div>
-      )}
-
-      {/* Error */}
-      {error && (
-        <div className="bg-red-500/10 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6">
-          {error}
-        </div>
-      )}
-
-      {/* Recipes */}
-      {!isLoading && !error && filteredRecipes.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredRecipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.idMeal}
-              recipe={recipe}
-              onSelectRecipe={setSelectedRecipeId}
+        {/* 🔍 Search */}
+        {activeSearch === 'cuisine' && (
+          <div className="relative mb-6">
+            <input
+              type="text"
+              placeholder="Search recipes (e.g. pasta, curry...)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-3 pl-10 rounded-xl border border-indigo-100 
+              bg-indigo-50/60 focus:outline-none focus:ring-2 focus:ring-indigo-300
+              placeholder-gray-400 text-gray-700"
             />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              🔍
+            </span>
+          </div>
+        )}
+
+        {/* 🔥 Cuisine Pills */}
+        <div className="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide">
+          {cuisines.map((cuisine) => (
+            <button
+              key={cuisine}
+              onClick={() => setSelectedCuisine(cuisine)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap
+              ${
+                selectedCuisine === cuisine
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-indigo-50/80 border border-indigo-100 text-gray-700 hover:bg-indigo-100'
+              }`}
+            >
+              {cuisine}
+            </button>
           ))}
         </div>
-      )}
 
-      {/* Empty */}
-      {!isLoading && !error && selectedCuisine && filteredRecipes.length === 0 && (
-        <div className="py-16 text-center text-gray-500 
-        bg-indigo-50/60 border border-indigo-100 rounded-2xl shadow-sm">
-          <p className="text-xl font-semibold mb-2">
-            Nothing here yet 👀
-          </p>
-          <p>Try another cuisine or search</p>
-        </div>
-      )}
+        {/* Loading */}
+        {isLoading && (
+          <div className="flex justify-center py-10">
+            <LoadingSpinner text="Finding delicious recipes..." />
+          </div>
+        )}
 
-      {/* Modal */}
+        {/* Error */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Recipes */}
+        {!isLoading && !error && filteredRecipes.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.idMeal}
+                recipe={recipe}
+                onSelectRecipe={setSelectedRecipeId}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty */}
+        {!isLoading && !error && selectedCuisine && filteredRecipes.length === 0 && (
+          <div className="py-10 text-center text-gray-500 bg-gray-50 rounded-xl">
+            <p className="text-xl font-semibold mb-2">
+              Nothing here yet 👀
+            </p>
+            <p>Try another cuisine or search</p>
+          </div>
+        )}
+
+      </div>
+
       {selectedRecipeId && (
         <RecipeDetail
           recipeId={selectedRecipeId}
           onClose={() => setSelectedRecipeId(null)}
         />
       )}
-    </main>
-  );
+
+    </div>
+
+  </div>
+);
 }
 
 export default Cuisine;
