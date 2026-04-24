@@ -31,7 +31,7 @@ return (
       What's in your kitchen?
     </h2>
 
-    {/* Modern Search Input */}
+
     <div className="relative">
       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl">
         🔍
@@ -46,13 +46,13 @@ return (
         className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent text-gray-700 placeholder-gray-400 transition duration-200 shadow-sm hover:shadow-md"
       />
 
-      {/* Enter hint icon */}
+
       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none">
         ⏎
       </span>
     </div>
 
-    {/* Ingredient Chips */}
+
     <div className="flex flex-wrap gap-2 mt-4">
       {selectedIngredients.map((item, index) => (
         <span

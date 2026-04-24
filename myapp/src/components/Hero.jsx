@@ -5,7 +5,7 @@ export default function Hero() {
       className="relative text-white flex flex-col md:flex-row items-center justify-between px-12 py-20 rounded-b-3xl shadow-xl overflow-hidden"
     >
       
-      {/* Background Image */}
+
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -14,10 +14,10 @@ export default function Hero() {
         }}
       ></div>
 
-      {/* Dark Overlay for Text Readability */}
+
       <div className="absolute inset-0 bg-black/60"></div>
 
-      {/* Content */}
+
       <div className="relative z-10 max-w-xl">
         <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
           Discover Your Next Meal 🍽️

@@ -73,7 +73,7 @@ function Categories({ activeSearch }) {
           Browse Recipes
         </h1>
 
-        {/* Category Search Bar */}
+
         {activeSearch === 'categories' && (
           <div className="relative mb-6">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
