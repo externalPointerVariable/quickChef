@@ -42,7 +42,7 @@ function Header({ setActiveSearch }) {
       
       <div className="w-full px-8 py-4 flex items-center justify-between">
 
-        {/* LEFT: Logo */}
+
       <div className="flex items-center space-x-3">
   <QuickChefLogo />
   <h1 className="text-3xl font-extrabold text-[#6B8E23]">
@@ -50,7 +50,7 @@ function Header({ setActiveSearch }) {
   </h1>
         </div>
 
-        {/* RIGHT: Navigation */}
+
         <div className="space-x-6 font-medium hidden md:flex">
           <a
             href="#home"

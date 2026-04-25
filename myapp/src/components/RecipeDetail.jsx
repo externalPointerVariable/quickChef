@@ -81,7 +81,7 @@ function RecipeDetail({ recipeId, onClose }) {
   return (
     <ModalLayout onClose={onClose}>
       
-      {/* Header */}
+
       <div className="flex justify-between items-start mb-6">
         <h2 className="text-3xl font-bold text-gray-800 leading-tight">
           {details.strMeal}
@@ -104,10 +104,10 @@ function RecipeDetail({ recipeId, onClose }) {
         </button>
       </div>
 
-      {/* Content */}
+
       <div className="flex flex-col md:flex-row gap-8">
 
-        {/* Left */}
+
         <div className="md:w-1/3 flex-shrink-0">
           <img
             src={details.strMealThumb}
@@ -118,7 +118,7 @@ function RecipeDetail({ recipeId, onClose }) {
             }}
           />
 
-          {/* Tags */}
+
           <div className="flex flex-wrap gap-2 text-sm mt-4">
             <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 
             rounded-full border border-indigo-200 backdrop-blur-sm">
@@ -144,10 +144,10 @@ function RecipeDetail({ recipeId, onClose }) {
           </div>
         </div>
 
-        {/* Right */}
+
         <div className="md:w-2/3 overflow-y-auto max-h-[70vh] pr-2">
 
-          {/* Ingredients */}
+
           <h3 className="text-xl font-semibold text-gray-800 mb-3">
             Ingredients
           </h3>
@@ -158,7 +158,7 @@ function RecipeDetail({ recipeId, onClose }) {
             ))}
           </ul>
 
-          {/* Instructions */}
+
           <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
             Instructions
           </h3>

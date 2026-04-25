@@ -16,7 +16,7 @@ function RecipeCard({ recipe, onSelectRecipe }) {
       transition duration-300 hover:-translate-y-2 active:scale-[0.98]"
     >
       
-      {/* Image */}
+
       <div className="relative overflow-hidden">
         <img
           src={recipe.strMealThumb}
@@ -27,10 +27,10 @@ function RecipeCard({ recipe, onSelectRecipe }) {
           }}
         />
 
-        {/* Base gradient (always visible) */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
 
-        {/* 🔥 Hover overlay */}
+
         <div className="absolute inset-0 bg-black/50 opacity-0 
         group-hover:opacity-100 transition duration-300 flex items-center justify-center">
 
@@ -44,7 +44,7 @@ function RecipeCard({ recipe, onSelectRecipe }) {
         </div>
       </div>
 
-      {/* Title */}
+
       <div className="p-4">
         <h3 className="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition">
           {truncatedTitle}
