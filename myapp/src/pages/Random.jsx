@@ -35,8 +35,12 @@ function Random() {
   }, []);
 
   return (
+  <div id="random" className="scroll-mt-24">
+
     <main className="max-w-4xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Surprise Me!</h1>
+      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">
+        Surprise Me!
+      </h1>
 
       {isLoading && <LoadingSpinner text="Fetching a delicious surprise..." />}
 
@@ -49,7 +53,10 @@ function Random() {
 
       {!isLoading && recipe && (
         <div className="mb-6">
-          <RecipeCard recipe={recipe} onSelectRecipe={setSelectedRecipeId} />
+          <RecipeCard
+            recipe={recipe}
+            onSelectRecipe={setSelectedRecipeId}
+          />
         </div>
       )}
 
@@ -67,7 +74,9 @@ function Random() {
         />
       )}
     </main>
-  );
+
+  </div>
+);
 }
 
 export default Random;

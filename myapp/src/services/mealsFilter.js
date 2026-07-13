@@ -1,27 +1,29 @@
 import config from '../config/config.js';
 
-const filterMealsByIngredients = async (ingredientName) => {
+const filterMealsByIngredients = async (ingredients) => {
+  if (!ingredients || ingredients.length === 0) return [];
+
   try {
-    const url = `${config.mealDbEndpoint}/filter.php?i=${encodeURIComponent(ingredientName)}`;
-    const res = await fetch(url);
-    console.log(`${config.mealDbEndpoint}/filter.php?i=${encodeURIComponent(ingredientName)}`);
-    console.log(url);
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
+    const results = await Promise.all(
+      ingredients.map((ingredient) =>
+        fetch(`${config.mealDbEndpoint}/filter.php?i=${encodeURIComponent(ingredient)}`)
+          .then((res) => res.json())
+          .then((data) => data.meals || [])
+      )
+    );
 
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await res.text();
-      console.error('Received non-JSON response:', text);
-      throw new Error('Invalid response format: expected JSON');
-    }
+    // Find common recipes (intersection)
+    const commonMeals = results.reduce((acc, curr) =>
+      acc.filter((meal) =>
+        curr.some((m) => m.idMeal === meal.idMeal)
+      )
+    );
 
-    const data = await res.json();
-    return data.meals || [];
+    return commonMeals;
+
   } catch (error) {
-    console.error(`Error filtering meals by ingredient: ${error.message}`);
-    return null;
+    console.error('Error filtering meals:', error);
+    return [];
   }
 };
 

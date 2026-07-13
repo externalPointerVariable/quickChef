@@ -3,78 +3,74 @@ import React, { useState } from 'react';
 function IngredientInput({ selectedIngredients, setSelectedIngredients }) {
   const [inputValue, setInputValue] = useState('');
 
+  const handleAddIngredient = () => {
+    const value = inputValue.trim().toLowerCase();
+
+    if (value && !selectedIngredients.includes(value)) {
+      setSelectedIngredients([...selectedIngredients, value]);
+    }
+
+    setInputValue('');
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      const newIngredient = inputValue.trim().toLowerCase();
-
-      if (!selectedIngredients.includes(newIngredient)) {
-        setSelectedIngredients([...selectedIngredients, newIngredient]);
-      }
-
-      setInputValue('');
+      handleAddIngredient();
     }
   };
 
-  const handleRemove = (ingredientToRemove) => {
-    setSelectedIngredients(
-      selectedIngredients.filter((ing) => ing !== ingredientToRemove)
-    );
+  const handleRemoveIngredient = (ingredientToRemove) => {
+    setSelectedIngredients(selectedIngredients.filter(item => item !== ingredientToRemove));
   };
 
-  return (
-    <div className="p-6 bg-white shadow-xl rounded-xl mb-8 border border-gray-100">
-      <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
-        What do you have in the kitchen?
-      </h2>
-      <p className="text-sm text-gray-500 mb-4">
-        Enter ingredients and press Enter to search for intersecting recipes.
-      </p>
+return (
+  <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-6 md:p-8 mb-8 border border-white/50">
+    
+    <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+      What's in your kitchen?
+    </h2>
+
+
+    <div className="relative">
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl">
+        🔍
+      </span>
 
       <input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Type an ingredient (e.g., chicken, rice, tomato)"
-        className="w-full p-3 border border-gray-800 rounded-lg text-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+        placeholder="Type an ingredient and press Enter"
+        className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent text-gray-700 placeholder-gray-400 transition duration-200 shadow-sm hover:shadow-md"
       />
 
-      <div className="mt-4 flex flex-wrap gap-2 min-h-[40px]">
-        {selectedIngredients.map((ingredient) => (
-          <span
-            key={ingredient}
-            className="inline-flex items-center bg-indigo-500 text-white text-sm font-medium px-4 py-1 rounded-full shadow-md"
-          >
-            {ingredient}
-            <button
-              onClick={() => handleRemove(ingredient)}
-              className="ml-2 text-indigo-100 hover:text-white transition duration-150 p-0.5 rounded-full"
-              aria-label={`Remove ${ingredient}`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </span>
-        ))}
-        {selectedIngredients.length === 0 && (
-          <p className="text-gray-400 italic">No ingredients added yet.</p>
-        )}
-      </div>
+
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none">
+        ⏎
+      </span>
     </div>
-  );
+
+
+    <div className="flex flex-wrap gap-2 mt-4">
+      {selectedIngredients.map((item, index) => (
+        <span
+          key={index}
+          className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+        >
+          {item}
+          <button
+            onClick={() => handleRemoveIngredient(item)}
+            className="text-indigo-500 hover:text-red-500 transition-colors"
+          >
+            ✕
+          </button>
+        </span>
+      ))}
+    </div>
+  </div>
+);
 }
 
 export default IngredientInput;

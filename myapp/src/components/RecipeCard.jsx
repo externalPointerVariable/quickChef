@@ -9,28 +9,48 @@ function RecipeCard({ recipe, onSelectRecipe }) {
       : recipe.strMeal;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden flex flex-col transform hover:scale-[1.01]">
-      <div className="aspect-video overflow-hidden">
+    <div
+      onClick={() => onSelectRecipe(recipe.idMeal)}
+      className="group cursor-pointer rounded-2xl overflow-hidden 
+      bg-white shadow-md hover:shadow-2xl 
+      transition duration-300 hover:-translate-y-2 active:scale-[0.98]"
+    >
+      
+
+      <div className="relative overflow-hidden">
         <img
           src={recipe.strMealThumb}
           alt={recipe.strMeal}
-          className="w-full h-full object-cover transition duration-500 ease-in-out hover:opacity-90"
+          className="w-full h-48 object-cover transition duration-500 group-hover:scale-110"
           onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://placehold.co/600x400/D1D5DB/1F2937?text=No+Image';
+            e.target.src = 'https://placehold.co/600x400';
           }}
         />
+
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+
+
+        <div className="absolute inset-0 bg-black/50 opacity-0 
+        group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+
+          <span className="text-white text-sm font-semibold tracking-wide flex items-center gap-1">
+            View Recipe
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </span>
+
+        </div>
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{truncatedTitle}</h3>
-        <button
-          onClick={() => onSelectRecipe(recipe.idMeal)}
-          className="mt-auto py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
-        >
-          View Recipe
-        </button>
+
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition">
+          {truncatedTitle}
+        </h3>
       </div>
+
     </div>
   );
 }
