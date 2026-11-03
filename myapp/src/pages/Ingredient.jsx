@@ -1,16 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import gsap from 'gsap';
 import IngredientInput from '../components/IngredientInput.jsx';
 import RecipeCard from '../components/RecipeCard.jsx';
-import RecipeDetail from '../components/RecipeDetail.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
 import { filterMealsByIngredients } from '../services/index.js';
+import { Sparkles, Utensils, AlertCircle } from 'lucide-react';
 
-const Ingredient = () => {
+export default function Ingredient({
+  onSelectRecipe,
+  favorites = [],
+  onToggleFavorite,
+}) {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+
+  const gridRef = useRef(null);
 
   const loadRecipes = useCallback(async (ingredients) => {
     if (ingredients.length === 0) {
@@ -20,7 +26,6 @@ const Ingredient = () => {
 
     setIsLoading(true);
     setError(null);
-    console.log(`Searching for recipes containing: ${ingredients.join(', ')}`);
 
     try {
       const recipes = await filterMealsByIngredients(ingredients);
@@ -28,18 +33,19 @@ const Ingredient = () => {
 
       if (recipes.length === 0) {
         setError(
-          `No recipes found that contain ALL of these ingredients: ${ingredients.join(', ')}. Try fewer ingredients.`
+          `No matching recipes found with these ingredients (${ingredients.join(', ')}). Try removing an item or using simpler staples.`
         );
       }
     } catch (err) {
-      console.error('General API fetch error:', err);
-      setError('A network error occurred while searching for recipes.');
+      console.error('Pantry fetch error:', err);
+      setError('A network error occurred while finding matching recipes.');
       setFilteredRecipes([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  // Debounced ingredient search
   useEffect(() => {
     const handler = setTimeout(() => {
       if (selectedIngredients.length > 0) {
@@ -48,68 +54,110 @@ const Ingredient = () => {
         setFilteredRecipes([]);
         setError(null);
       }
-    }, 500);
+    }, 400);
 
     return () => clearTimeout(handler);
   }, [selectedIngredients, loadRecipes]);
 
+  // GSAP Stagger animation for recipe cards
+  useEffect(() => {
+    if (filteredRecipes.length > 0 && gridRef.current) {
+      const cards = gridRef.current.querySelectorAll('.recipe-tilt-card');
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 30, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            stagger: 0.05,
+            duration: 0.4,
+            ease: 'power3.out',
+          }
+        );
+      }
+    }
+  }, [filteredRecipes]);
+
+  const isFavorite = (id) => favorites.some((fav) => String(fav.idMeal) === String(id));
+
   return (
-    <main className="max-w-6xl mx-auto p-4 md:p-8">
+    <section id="pantry" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <IngredientInput
         selectedIngredients={selectedIngredients}
         setSelectedIngredients={setSelectedIngredients}
       />
 
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
-        {selectedIngredients.length > 0 ? 'Filtered Recipes' : 'Start Searching'}
-      </h2>
-
-      {isLoading && <LoadingSpinner text="Finding the perfect meal..." />}
-
-      {error && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative shadow-md"
-          role="alert"
-        >
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline ml-2">{error}</span>
-        </div>
-      )}
-
-      {!isLoading && !error && selectedIngredients.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredRecipes.length > 0 ? (
-            filteredRecipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.idMeal}
-                recipe={recipe}
-                onSelectRecipe={setSelectedRecipeId}
-              />
-            ))
-          ) : (
-            <div className="lg:col-span-3 py-16 text-center text-gray-500 bg-white rounded-xl shadow-inner">
-              <p className="text-xl font-semibold mb-2">No Quick Meals Found!</p>
-              <p>Try simplifying your search or checking the spelling of your ingredients.</p>
-            </div>
+      {/* Results Header */}
+      <div className="flex items-center justify-between mb-8 pb-3 border-b border-white/10">
+        <div>
+          <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center space-x-2">
+            <span>
+              {selectedIngredients.length > 0
+                ? `Matching Recipes (${filteredRecipes.length})`
+                : 'Pantry Recipe Discovery'}
+            </span>
+          </h3>
+          {selectedIngredients.length > 0 && (
+            <p className="text-xs text-slate-400 mt-1">
+              Showing recipes filtered for: {selectedIngredients.join(' + ')}
+            </p>
           )}
         </div>
-      )}
 
-      {!isLoading && !error && selectedIngredients.length === 0 && (
-        <div className="py-16 text-center text-gray-500 bg-white rounded-xl shadow-lg">
-          <p className="text-xl font-semibold mb-2">Enter your ingredients above to see ideas!</p>
-          <p>Quick Chef will find the perfect meal using only what you have.</p>
+        {filteredRecipes.length > 0 && (
+          <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            ✓ Ready to cook
+          </span>
+        )}
+      </div>
+
+      {isLoading && <LoadingSpinner text="Analyzing pantry combinations..." />}
+
+      {error && (
+        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 flex items-start space-x-3 shadow-lg">
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-rose-400" />
+          <p className="text-sm font-medium">{error}</p>
         </div>
       )}
 
-      {selectedRecipeId && (
-        <RecipeDetail
-          recipeId={selectedRecipeId}
-          onClose={() => setSelectedRecipeId(null)}
-        />
+      {/* Recipes Grid */}
+      {!isLoading && !error && selectedIngredients.length > 0 && (
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          {filteredRecipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.idMeal}
+              recipe={recipe}
+              onSelectRecipe={onSelectRecipe}
+              isFavorite={isFavorite(recipe.idMeal)}
+              onToggleFavorite={onToggleFavorite}
+            />
+          ))}
+        </div>
       )}
-    </main>
-  );
-};
 
-export default Ingredient;
+      {/* Empty State when no ingredients selected */}
+      {!isLoading && !error && selectedIngredients.length === 0 && (
+        <div className="text-center py-16 px-4 rounded-3xl glass-panel border border-white/5 max-w-2xl mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4 text-amber-400">
+            <Utensils className="w-8 h-8" />
+          </div>
+          <h4 className="text-lg font-bold text-white mb-2">
+            Ready to Cook Something Wonderful?
+          </h4>
+          <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
+            Add ingredients you have in your fridge or kitchen to unlock tailor-made recipes with complete step-by-step instructions.
+          </p>
+          <div className="inline-flex items-center space-x-2 text-xs font-medium text-amber-300/80">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>Pro-tip: Try clicking '🍗 Chicken' and '🧄 Garlic' above!</span>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}

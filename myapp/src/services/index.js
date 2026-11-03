@@ -10,6 +10,7 @@ import {
   filterMealByCuisine,
   filterMealById,
   filterMealsByIngredients,
+  searchMealByName,
 } from './mealsFilter.js';
 
 export {
@@ -21,4 +22,5 @@ export {
   filterMealByCuisine,
   filterMealById,
   filterMealsByIngredients,
+  searchMealByName,
 };
